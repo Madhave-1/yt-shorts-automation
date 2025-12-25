@@ -77,7 +77,7 @@ def download_video(request: DownloadRequest):
         video_id = str(uuid.uuid4())
         output_path = TEMP_DIR / f"{video_id}.mp4"
         
-        # yt-dlp options with SSL bypass
+        # yt-dlp options with SSL bypass and cookie support
         ydl_opts = {
             'format': 'best[ext=mp4]/best',
             'outtmpl': str(output_path),
@@ -89,9 +89,11 @@ def download_video(request: DownloadRequest):
             'socket_timeout': 30,
             'retries': 3,
             'legacy_server_connect': True,
+            'cookiesfrombrowser': ('chrome',),  # Use cookies from Chrome browser
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android'],
+                    'player_client': ['android', 'web'],
+                    'skip': ['dash', 'hls'],
                 }
             },
         }
