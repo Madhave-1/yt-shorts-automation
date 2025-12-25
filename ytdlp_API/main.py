@@ -77,8 +77,19 @@ def download_video(request: DownloadRequest):
         video_id = str(uuid.uuid4())
         output_path = TEMP_DIR / f"{video_id}.mp4"
         
-        # Check for cookies file
+        # Check for cookies file or environment variable
         cookies_path = Path("./cookies.txt")
+        cookies_from_env = os.environ.get('YOUTUBE_COOKIES_BASE64')
+        
+        # If cookies in env var, decode and write to temp file
+        if cookies_from_env and not cookies_path.exists():
+            import base64
+            try:
+                cookies_data = base64.b64decode(cookies_from_env)
+                cookies_path.write_bytes(cookies_data)
+                print("✅ Decoded cookies from environment variable")
+            except Exception as e:
+                print(f"⚠️ Failed to decode cookies from env: {e}")
         
         # yt-dlp options with enhanced bot bypass
         ydl_opts = {
