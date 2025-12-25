@@ -93,17 +93,20 @@ def download_video(request: DownloadRequest):
         
         # yt-dlp options with enhanced bot bypass
         ydl_opts = {
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+            'format': 'bestvideo[height<=720]+bestaudio/best[height<=720]/best',  # Prioritize 720p or lower
             'outtmpl': str(output_path),
-            'quiet': True,
-            'no_warnings': True,
+            'quiet': False,  # Enable output for debugging
+            'no_warnings': False,
             'nocheckcertificate': True,
             'no_check_certificate': True,
             'prefer_insecure': True,
             'socket_timeout': 30,
             'retries': 5,
             'legacy_server_connect': True,
-            'merge_output_format': 'mp4',
+            'postprocessors': [{
+                'key': 'FFmpegVideoConvertor',
+                'preferedformat': 'mp4',
+            }],
             # Enhanced anti-bot measures
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -113,8 +116,7 @@ def download_video(request: DownloadRequest):
             },
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android', 'web', 'ios'],
-                    'skip': ['dash', 'hls'],
+                    'player_client': ['android', 'web'],
                 }
             },
         }
