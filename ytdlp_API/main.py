@@ -77,6 +77,9 @@ def download_video(request: DownloadRequest):
         video_id = str(uuid.uuid4())
         output_path = TEMP_DIR / f"{video_id}.mp4"
         
+        # Check for cookies file
+        cookies_path = Path("./cookies.txt")
+        
         # yt-dlp options with enhanced bot bypass
         ydl_opts = {
             'format': 'best[ext=mp4]/best',
@@ -103,6 +106,13 @@ def download_video(request: DownloadRequest):
                 }
             },
         }
+        
+        # Add cookies if file exists
+        if cookies_path.exists():
+            ydl_opts['cookiefile'] = str(cookies_path)
+            print(f"✅ Using cookies from {cookies_path}")
+        else:
+            print("⚠️ No cookies.txt found - may encounter bot detection")
         
         # Download video
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
