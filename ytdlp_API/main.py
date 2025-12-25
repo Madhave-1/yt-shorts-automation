@@ -93,7 +93,7 @@ def download_video(request: DownloadRequest):
         
         # yt-dlp options with enhanced bot bypass
         ydl_opts = {
-            'format': 'best[ext=mp4]/best',
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
             'outtmpl': str(output_path),
             'quiet': True,
             'no_warnings': True,
@@ -103,6 +103,7 @@ def download_video(request: DownloadRequest):
             'socket_timeout': 30,
             'retries': 5,
             'legacy_server_connect': True,
+            'merge_output_format': 'mp4',
             # Enhanced anti-bot measures
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
