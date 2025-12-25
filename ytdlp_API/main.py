@@ -77,7 +77,7 @@ def download_video(request: DownloadRequest):
         video_id = str(uuid.uuid4())
         output_path = TEMP_DIR / f"{video_id}.mp4"
         
-        # yt-dlp options with SSL bypass and cookie support
+        # yt-dlp options with enhanced bot bypass
         ydl_opts = {
             'format': 'best[ext=mp4]/best',
             'outtmpl': str(output_path),
@@ -87,12 +87,18 @@ def download_video(request: DownloadRequest):
             'no_check_certificate': True,
             'prefer_insecure': True,
             'socket_timeout': 30,
-            'retries': 3,
+            'retries': 5,
             'legacy_server_connect': True,
-            'cookiesfrombrowser': ('chrome',),  # Use cookies from Chrome browser
+            # Enhanced anti-bot measures
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Sec-Fetch-Mode': 'navigate',
+            },
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android', 'web'],
+                    'player_client': ['android', 'web', 'ios'],
                     'skip': ['dash', 'hls'],
                 }
             },
